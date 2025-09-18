@@ -1,0 +1,30 @@
+# 忽略 Python 缓存和编译文件
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 忽略虚拟环境文件夹 (根据你的命名)
+venv/
+.venv/
+env/
+.env/
+
+# 忽略编辑器和操作系统的配置文件
+.vscode/
+.idea/
+.DS_Store
+
+# 忽略数据集文件 (非常重要!)
+*.csv
+*.xlsx
+*.xls
+*.jsonl
+
+# 如果你的数据集都放在一个叫 'data' 的文件夹里，可以这样写：
+data/
+
+# 忽略包含敏感信息的文件，比如 API 密钥
+*.env
+credentials.json
+.env

@@ -1,0 +1,1 @@
+all scripts need to run in programme root dir
