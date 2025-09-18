@@ -23,7 +23,7 @@ env/
 
 # 如果你的数据集都放在一个叫 'data' 的文件夹里，可以这样写：
 data/*
-
+!data/.gitkeep
 # 忽略包含敏感信息的文件，比如 API 密钥
 *.env
 credentials.json
