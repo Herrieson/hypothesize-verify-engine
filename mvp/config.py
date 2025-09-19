@@ -20,7 +20,7 @@ if not all([OPENKEY_API_KEY, SERPER_API_KEY]):
 # 用于生成初始假设图谱的模型 (来自实验 1)
 HYPOTHESIZER_MODEL = "gemini-2.5-flash"
 # 用于从三元组生成搜索查询的模型 (来自实验 2)
-QUERY_GENERATOR_MODEL = "gemini-2.5-flash-lite"
+QUERY_GENERATOR_MODEL = "gemini-2.5-flash"
 # 用于判断证据是否支持三元组的验证器模型 (来自实验 3)
 VERIFIER_MODEL = "gemini-2.5-flash"
 # 用于基于已验证的证据生成最终答案的规划/回答模型 (来自实验 4)

@@ -10,8 +10,8 @@ import config
 # 使用config.py中的配置初始化一个全局客户端
 try:
     client = OpenAI(
-        api_key=config.OPENROUTER_API_KEY,
-        base_url=config.OPENROUTER_BASE_URL
+        api_key=config.OPENKEY_API_KEY,
+        base_url=config.OPENKEY_BASE_URL
     )
 except Exception as e:
     print(f"初始化OpenAI客户端时出错: {e}")
