@@ -5,6 +5,7 @@ import time
 import requests
 from openai import OpenAI
 import config
+import random
 
 # --- OpenAI 客户端初始化 ---
 # 使用config.py中的配置初始化一个全局客户端
@@ -21,16 +22,16 @@ except Exception as e:
 
 def call_llm(prompt: str, model: str, is_json: bool = False, system_prompt: str = None):
     """
-    一个通用的LLM调用封装函数，包含基本的重试逻辑。
+    A general-purpose LLM call wrapper with exponential backoff and jitter.
 
     Args:
-        prompt (str): 发送给用户角色的主提示。
-        model (str): 要使用的模型名称。
-        is_json (bool): 是否期望返回JSON格式的输出。
-        system_prompt (str, optional): 系统角色的提示。 Defaults to None.
+        prompt (str): The main prompt for the user role.
+        model (str): The name of the model to use.
+        is_json (bool): Whether to expect a JSON formatted output.
+        system_prompt (str, optional): The prompt for the system role. Defaults to None.
 
     Returns:
-        str or None: LLM的响应内容，如果失败则返回None。
+        str or None: The LLM's response content, or None if it fails.
     """
     if not client:
         print("错误: OpenAI客户端未初始化。")
@@ -42,8 +43,9 @@ def call_llm(prompt: str, model: str, is_json: bool = False, system_prompt: str 
     messages.append({"role": "user", "content": prompt})
 
     response_format = {"type": "json_object"} if is_json else None
-
-    for attempt in range(2): # 重试一次
+    
+    # --- New Retry Logic ---
+    for attempt in range(config.MAX_RETRIES):
         try:
             response = client.chat.completions.create(
                 model=model,
@@ -53,9 +55,20 @@ def call_llm(prompt: str, model: str, is_json: bool = False, system_prompt: str 
             )
             return response.choices[0].message.content.strip()
         except Exception as e:
-            print(f"对模型 {model} 的LLM调用失败，正在重试... 错误: {e}")
-            time.sleep(1)
-    return None
+            # If this is the last attempt, print the final error and return None
+            if attempt == config.MAX_RETRIES - 1:
+                print(f"对模型 {model} 的LLM调用最终失败。错误: {e}")
+                break
+
+            # Calculate delay with exponential backoff and jitter
+            backoff_time = config.INITIAL_BACKOFF * (2 ** attempt)
+            jitter = random.uniform(0, 1)
+            delay = backoff_time + jitter
+            
+            print(f"对模型 {model} 的LLM调用失败，将在 {delay:.2f} 秒后重试... (尝试 {attempt + 1}/{config.MAX_RETRIES}) 错误: {e}")
+            time.sleep(delay)
+            
+    return None # Return None if all retries fail
 
 def execute_search(query: str) -> str:
     """

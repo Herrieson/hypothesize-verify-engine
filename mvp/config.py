@@ -28,3 +28,5 @@ ANSWERER_MODEL = "gemini-2.5-pro"
 
 # --- API调用参数 ---
 LLM_TEMPERATURE = 0.1 # 较低的温度以获得更确定的输出
+MAX_RETRIES = 3       # The maximum number of retries for an API call
+INITIAL_BACKOFF = 1   # The initial backoff delay in seconds
